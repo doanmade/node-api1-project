@@ -12,11 +12,9 @@ server.get("/api/users", (req, res) => {
   Users.find()
     .then(users => {
       res.send(users);
-      // res.status(200).json(users);
     })
     .catch(error => {
       res.send(error);
-      // res.status(500).json({ message: "error getting users" });
     });
 });
 
@@ -26,11 +24,9 @@ server.get("/api/users/:id", (req, res) => {
   Users.findById(id)
     .then(users => {
       res.send(users);
-      // res.status(200).json(users);
     })
     .catch(error => {
       res.send(error);
-      // res.status(500).json({ message: "error getting users" });
     });
 });
 
@@ -43,13 +39,13 @@ server.post("/api/users", (req, res) => {
     Users.insert(usersData)
       .then(user => {
         res.json(user);
-        // res.status(200).json(users);
       })
       .catch(error => {
         res.json({ message: "There was a error adding a user" });
       });
   }
 });
+
 //Update a Users
 server.put("/api/users/:id", (req, res) => {
   const id = req.params.id;
@@ -57,20 +53,18 @@ server.put("/api/users/:id", (req, res) => {
   Users.update(id, changes)
     .then(user => {
       res.json(user);
-      // res.status(200).json(users);
     })
     .catch(error => {
-      res.json({ message: "There was a error removing a user" });
+      res.json({ message: "There was a error Updating a user" });
     });
 });
-//Delete a users
 
+//Delete a users
 server.delete("/api/users/:id", (req, res) => {
   const id = req.params.id;
   Users.remove(id)
     .then(user => {
       res.json(user);
-      // res.status(200).json(users);
     })
     .catch(error => {
       res.json({ message: "There was a error removing a user" });
