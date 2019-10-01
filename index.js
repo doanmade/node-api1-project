@@ -22,8 +22,13 @@ server.get("/api/users", (req, res) => {
 server.get("/api/users/:id", (req, res) => {
   const id = req.params.id;
   Users.findById(id)
-    .then(users => {
-      res.send(users);
+    .then(user => {
+      if (user) {
+        res.status(200).json(user);
+      } else {
+        res.status(404).json({ message: "This ID does not exist." });
+      }
+      res.send(user);
     })
     .catch(error => {
       res.send(error);
@@ -33,7 +38,7 @@ server.get("/api/users/:id", (req, res) => {
 //Add a Users
 server.post("/api/users", (req, res) => {
   const usersData = req.body;
-  if (!usersData.name) {
+  if (!usersData.name || !usersData.bio) {
     res.status(400).json({ message: "a user needs a name" });
   } else {
     Users.insert(usersData)
@@ -52,6 +57,14 @@ server.put("/api/users/:id", (req, res) => {
   const changes = req.body;
   Users.update(id, changes)
     .then(user => {
+      if (changes.name === null || changes.bio === null) {
+        res.status(400).json({ message: "A person must have a name and Bio" });
+      } else if (user) {
+        res.status(200).json(user);
+      } else {
+        res.status(404).json({ error: "This ID does not exist.." });
+      }
+
       res.json(user);
     })
     .catch(error => {
@@ -64,7 +77,11 @@ server.delete("/api/users/:id", (req, res) => {
   const id = req.params.id;
   Users.remove(id)
     .then(user => {
-      res.json(user);
+      if (user) {
+        res.status(200).json(user);
+      } else {
+        res.status(404).json({ message: "This ID does not exist." });
+      }
     })
     .catch(error => {
       res.json({ message: "There was a error removing a user" });
@@ -72,4 +89,6 @@ server.delete("/api/users/:id", (req, res) => {
 });
 
 const port = 8000;
-server.listen(port, () => console.log("\nApi Server is Up and Running\n"));
+server.listen(port, () =>
+  console.log("\nApi Server is Up and Running on port \n")
+);
